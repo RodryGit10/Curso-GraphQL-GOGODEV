@@ -3,6 +3,9 @@ import { startStandaloneServer } from "@apollo/server/standalone"
 import { v1 as uuid } from 'uuid'
 import { GraphQLError } from "graphql"
 
+// @skip(if: Boolean)
+// @include(if: Boolean)
+
 const users = [
     {
         id: 1,
@@ -33,12 +36,13 @@ const typeDefs = `
         zipCode: Int!
         city: String!
         phone: String
-        address: String
+        address: String @skip(if: Boolean)
     }
 
     type Query {
         allUsers: [User]
-        userCount: Int!
+        userCount: Int! @deprecated(reason: "Use userLength instead")
+        userLength: Int!
         findUsersByName(name: String): User
         findUsersById(id:ID!): User
     }
@@ -62,6 +66,7 @@ const resolvers = {
     Query: {
         allUsers: () => users,
         userCount: () => users.length,
+        userLength: () => users.length,
         findUsersByName: (parent, args) => {
             const {name} = args
             return users.find(user => user.name === name)
