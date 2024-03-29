@@ -4,10 +4,12 @@ import { startStandaloneServer } from "@apollo/server/standalone"
 // origen de datos 
 const books = [
     {
+        id: 1,
         title: 'Titulo del libro 1',
         author: 'Rodry'
     },
     {
+        id: 2,
         title: 'Titulo del libro 2',
         author: 'Simeon'
     }
@@ -17,18 +19,21 @@ const books = [
 // Definicion de datos 
 const typeDefs = `
 type Book {
-    type: String
+    id: ID!
+    title: String
     author: String
 }
 
 type Query {
     books: [Book]
+    book(id: ID!):Book
 }
 `
 // Resolver -> Solucionadores
 const resolvers = {
     Query: {
-        books: () => books
+        books: () => books,
+        book: (parent, args) => books.find((book) => book.id == parseInt(args.id))
     }
 }
 
@@ -36,6 +41,8 @@ const resolvers = {
 
 
 // Suscripciones
+
+
 
 const server = new ApolloServer({
     typeDefs, resolvers
