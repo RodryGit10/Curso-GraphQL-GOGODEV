@@ -7,7 +7,7 @@
   "scripts": {
     "compile": "tsc",
     "start": "npm run compile && node ./dist/index.js",
-    "dev": "npx nodemon index,ts"
+    "dev": "npx nodemon index.js"
   },
   "keywords": [],
   "author": "",

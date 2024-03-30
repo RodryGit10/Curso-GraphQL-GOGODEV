@@ -36,7 +36,7 @@ const typeDefs = `
         zipCode: Int!
         city: String!
         phone: String
-        address: String @skip(if: Boolean)
+        address: String
     }
 
     type Query {
