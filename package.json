@@ -20,10 +20,12 @@
     "graphql": "^16.8.1",
     "graphql-subscriptions": "^2.0.0",
     "graphql-ws": "^5.16.0",
+    "mongoose": "^8.2.4",
     "uuid": "^9.0.1",
     "ws": "^8.16.0"
   },
   "devDependencies": {
+    "@types/mongoose": "^5.11.97",
     "@types/node": "^20.11.30",
     "nodemon": "^3.1.0",
     "typescript": "^5.4.3"

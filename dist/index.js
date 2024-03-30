@@ -8,6 +8,9 @@ import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHt
 import { expressMiddleware } from '@apollo/server/express4';
 import bodyParser from 'body-parser';
 import { PubSub } from 'graphql-subscriptions';
+import mongoose from 'mongoose';
+import CommentMongoose from './models/Comment.js';
+const mongoDb = "mongodb+srv://grapgql:grapgql@cluster0.abmuy81.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 const port = 4000;
 const typeDefs = `
   type Comment {
@@ -16,7 +19,7 @@ const typeDefs = `
   }
 
   type Query {
-    sayHello: String!
+    getComment(id:ID!): Comment
   }
 
   type Mutation {
@@ -32,8 +35,8 @@ const typeDefs = `
 const pubSub = new PubSub();
 const resolvers = {
     Query: {
-        sayHello() {
-            return "Hello, world!";
+        getComment: async (parent, { id }) => {
+            return await CommentMongoose.findById(id);
         }
     },
     Subscription: {
@@ -42,10 +45,15 @@ const resolvers = {
         }
     },
     Mutation: {
-        createComment(parent, { name }) {
-            // TODO: create comment
+        async createComment(parent, { name }) {
+            const endDate = new Date().toDateString();
+            const newComment = new CommentMongoose({
+                name: name,
+                endDate: endDate
+            });
+            await newComment.save();
             pubSub.publish('COMMENT_CREATED', { commentCreated: {
-                    name, endDate: new Date().toDateString(),
+                    name, endDate: endDate
                 } });
             return `Comentario: ${name} creado`;
         }
@@ -76,6 +84,8 @@ const apolloServer = new ApolloServer({
 });
 await apolloServer.start();
 app.use('/graphql', bodyParser.json(), expressMiddleware(apolloServer));
+mongoose.set('strictQuery', false);
+mongoose.connect(mongoDb);
 httpServer.listen(port, () => {
     console.log(`Listening on port: http://localhost:${port}/graphql`);
 });
